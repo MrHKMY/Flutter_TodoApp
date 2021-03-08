@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TaskCardWidget extends StatelessWidget {
@@ -64,7 +65,11 @@ class TodoWidget extends StatelessWidget {
               margin: EdgeInsets.only(right: 16),
               decoration: BoxDecoration(
                 color: isDone ? Color(0xFF7349FE) : Colors.transparent,
-                borderRadius: BorderRadius.circular(6)
+                borderRadius: BorderRadius.circular(6),
+                border: isDone ? null : Border.all(
+                  color: Color(0xFF86829D),
+                  width: 1.5,
+                )
               ),
               child: Image(
                   image: AssetImage(
@@ -73,9 +78,9 @@ class TodoWidget extends StatelessWidget {
             Text(
               text ?? "Unnamed Todo",
             style: TextStyle(
-              color: Color(0xFF211551),
+              color: isDone ? Color(0xFF86829D) : Color(0xFF211551),
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontWeight: isDone ? FontWeight.w500 : FontWeight.bold,
             ),)
           ],
         ),

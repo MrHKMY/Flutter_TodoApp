@@ -60,7 +60,11 @@ class _HomepageState extends State<Homepage> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                      color: Colors.purple,
+                      gradient: LinearGradient(
+                        colors: [Colors.purple, Colors.purple[400]],
+                        begin: Alignment(0.0, -1),
+                        end: Alignment(0,1)
+                      ),
                       borderRadius: BorderRadius.circular(20.0)),
                   child: Image(
                     image: AssetImage("assets/images/add_icon.png"),
