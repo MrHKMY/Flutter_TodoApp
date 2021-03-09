@@ -4,8 +4,8 @@ import 'package:sqflite/sqflite.dart';
 import 'model/task.dart';
 
 class DatabaseHelper {
-  
-  Future<Database> database() async{
+
+  Future<Database> database() async {
     return openDatabase(
       join(await getDatabasesPath(), 'task.db'),
       onCreate: (db, version) {
@@ -20,7 +20,17 @@ class DatabaseHelper {
   Future<void> insertTask(Task task) async {
     Database _db = await database();
     await _db.insert('tasks', task.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace);
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  Future<List<Task>> retrieveTask() async {
+    Database _db = await database();
+    List<Map<String, dynamic>> taskMap = await _db.query("tasks");
+    return List.generate(taskMap.length, (index) {
+      return Task(id: taskMap[index]["id"], title: taskMap[index]["title"], description: taskMap[index]["description"]);
+    });
+
+  }
+
 }
 
