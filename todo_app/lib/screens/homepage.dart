@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/database_helper.dart';
 import 'package:todo_app/screens/taskpage.dart';
 import 'package:todo_app/widgets.dart';
 
@@ -8,6 +9,8 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,52 +29,51 @@ class _HomepageState extends State<Homepage> {
                     child: Image(image: AssetImage("assets/images/logo.png")),
                   ),
                   Expanded(
-                    child: ListView(
-                      children: [
-                        TaskCardWidget(
-                          title: "Get Started!",
-                          description:
-                          "Edit or delete the description to get started.",
-                        ),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget()
-                      ],
-                    ),
+                      child: FutureBuilder(
+                    initialData: [],
+                    future: _dbHelper.retrieveTask(),
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return TaskCardWidget(
+                              title: snapshot.data[index].title,
+                            );
+                          });
+                    },
                   )
+                      // TaskCardWidget(
+                      //   title: "Get Started!",
+                      //   description:
+                      //   "Edit or delete the description to get started.",
+                      // ),
+                      ),
                 ],
               ),
               Positioned(
-                bottom: 24.0,
-                right: 0,
-                child : GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  bottom: 24.0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(
-                        builder: (context) => TaskPage()
+                        MaterialPageRoute(builder: (context) => TaskPage()),
+                      ).then((value) => setState(() {}));
+                    },
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Colors.purple, Colors.purple[400]],
+                              begin: Alignment(0.0, -1),
+                              end: Alignment(0, 1)),
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: Image(
+                        image: AssetImage("assets/images/add_icon.png"),
                       ),
-                    );
-                  },
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.purple, Colors.purple[400]],
-                        begin: Alignment(0.0, -1),
-                        end: Alignment(0,1)
-                      ),
-                      borderRadius: BorderRadius.circular(20.0)),
-                  child: Image(
-                    image: AssetImage("assets/images/add_icon.png"),
-                  ),
-                ),
-              )
-              )
+                    ),
+                  ))
             ],
           ),
         ),
