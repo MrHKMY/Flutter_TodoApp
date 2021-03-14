@@ -2,14 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/database_helper.dart';
 import 'package:todo_app/model/task.dart';
 
+import '../model/task.dart';
+import '../model/task.dart';
 import '../widgets.dart';
 
 class TaskPage extends StatefulWidget {
+  final Task task;
+
+  TaskPage({@required this.task});
+
   @override
   _TaskPageState createState() => _TaskPageState();
 }
 
 class _TaskPageState extends State<TaskPage> {
+  String _taskFile = "";
+
+  @override
+  void initState() {
+    if (widget.task != null) {
+      _taskFile = widget.task.title;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,19 +54,20 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                       Expanded(
                           child: TextField(
-                            onSubmitted: (value) async {
-
-                              if(value != null) {
-                                DatabaseHelper _dbHelper = DatabaseHelper();
-                                Task _hardcodedTask = Task(
-                                  title: value
-                                );
-
-                                await _dbHelper.insertTask(_hardcodedTask);
-
-                                print("$value has been created");
-                              }
-                            },
+                        onSubmitted: (value) async {
+                          //Check if field is not empty
+                          if (value != null) {
+                            //Check if task is null
+                            if (widget.task == null) {
+                              DatabaseHelper _dbHelper = DatabaseHelper();
+                              Task _hardcodedTask = Task(title: value);
+                              await _dbHelper.insertTask(_hardcodedTask);
+                            } else {
+                              print("Update the existing task");
+                            }
+                          }
+                        },
+                        controller: TextEditingController()..text = _taskFile,
                         decoration: InputDecoration(
                             hintText: "Enter Title", border: InputBorder.none),
                         style: TextStyle(

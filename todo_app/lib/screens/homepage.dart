@@ -3,6 +3,8 @@ import 'package:todo_app/database_helper.dart';
 import 'package:todo_app/screens/taskpage.dart';
 import 'package:todo_app/widgets.dart';
 
+import 'taskpage.dart';
+
 class Homepage extends StatefulWidget {
   @override
   _HomepageState createState() => _HomepageState();
@@ -36,8 +38,17 @@ class _HomepageState extends State<Homepage> {
                       return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            return TaskCardWidget(
-                              title: snapshot.data[index].title,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => TaskPage(
+                                    task: snapshot.data[index],
+                                  ))
+                                );
+                              },
+                              child: TaskCardWidget(
+                                title: snapshot.data[index].title,
+                              ),
                             );
                           });
                     },
@@ -57,7 +68,7 @@ class _HomepageState extends State<Homepage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => TaskPage()),
+                        MaterialPageRoute(builder: (context) => TaskPage(task: null,)),
                       ).then((value) => setState(() {}));
                     },
                     child: Container(
