@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:todo_app/database_helper.dart';
 import 'package:todo_app/model/task.dart';
+import 'package:todo_app/model/todo.dart';
 
+import '../database_helper.dart';
+import '../database_helper.dart';
 import '../model/task.dart';
 import '../model/task.dart';
+import '../widgets.dart';
 import '../widgets.dart';
 
 class TaskPage extends StatefulWidget {
@@ -16,12 +21,17 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+
   String _taskFile = "";
+  int _taskID = 0;
+
+  DatabaseHelper _dbHelper = DatabaseHelper();
 
   @override
   void initState() {
     if (widget.task != null) {
       _taskFile = widget.task.title;
+      _taskID = widget.task.id;
     }
     super.initState();
   }
@@ -59,7 +69,7 @@ class _TaskPageState extends State<TaskPage> {
                           if (value != null) {
                             //Check if task is null
                             if (widget.task == null) {
-                              DatabaseHelper _dbHelper = DatabaseHelper();
+
                               Task _hardcodedTask = Task(title: value);
                               await _dbHelper.insertTask(_hardcodedTask);
                             } else {
@@ -88,12 +98,70 @@ class _TaskPageState extends State<TaskPage> {
                         contentPadding: EdgeInsets.symmetric(horizontal: 24)),
                   ),
                 ),
-                TodoWidget(
-                  text: "First task",
-                  isDone: false,
-                ),
-                TodoWidget(
-                  isDone: true,
+                FutureBuilder(
+                    initialData: [],
+                    future: _dbHelper.retrieveTodo(_taskID),
+                    builder: (context, snapshot) {
+                      return Expanded(
+                        child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  //Todo : swith todo completion state
+                                },
+                                child: TodoWidget(
+                                  text: snapshot.data[index].title,
+                                  isDone: snapshot.data[index].isDone == 0 ? false : true,
+                                ),
+                              );
+                            },),
+                      );
+                    }),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        margin: EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: Color(0xFF86829D),
+                              width: 1.5,
+                            )),
+                        child: Image(
+                            image:
+                                AssetImage("assets/images/check_icon.png")),
+                      ),
+                      Expanded(
+                          child: TextField(
+                        onSubmitted: (value) async {
+                          //check if field is null
+                          if (value != null) {
+                            //check if the todoo is null
+                            if (widget.task != null) {
+                              DatabaseHelper _dbHelper = DatabaseHelper();
+                              Todo _newTodo = Todo(
+                                title: value,
+                                isDone: 0,
+                                taskID: widget.task.id,
+                              );
+                              await _dbHelper.insertTodo(_newTodo);
+                              setState(() {
+                              });
+                            }
+                          }
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Enter item",
+                            border: InputBorder.none),
+                      ))
+                    ],
+                  ),
                 )
               ],
             ),
