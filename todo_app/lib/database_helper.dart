@@ -22,10 +22,14 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> insertTask(Task task) async {
+  Future<int> insertTask(Task task) async {
+    int taskID = 0;
     Database _db = await database();
     await _db.insert('tasks', task.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+        conflictAlgorithm: ConflictAlgorithm.replace).then((value) {
+          taskID = value;
+    });
+    return taskID;
   }
 
   Future<void> insertTodo(Todo todo) async {
@@ -50,6 +54,11 @@ class DatabaseHelper {
       return Todo(id: todoMap[index]["id"], title: todoMap[index]["title"], taskID: todoMap[index]["taskID"], isDone: todoMap[index]["isDone"]);
     });
 
+  }
+
+  Future<void> updateTaskTitle (int id, String title) async {
+    Database _db = await database();
+    await _db.rawUpdate("UPDATE tasks SET title = '$title' WHERE id = '$id'");
   }
 
 }

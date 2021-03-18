@@ -87,12 +87,17 @@ class _TaskPageState extends State<TaskPage> {
                           //Check if field is not empty
                           if (value != null) {
                             //Check if task is null
-                            if (widget.task != null) {
+                            if (widget.task == null) {
 
-                              Task _hardcodedTask = Task(title: value);
-                              await _dbHelper.insertTask(_hardcodedTask);
+                              Task _newTask = Task(title: value);
+                              _taskID = await _dbHelper.insertTask(_newTask);
+                              setState(() {
+                                _contentVisible = true;
+                                _taskFile = value;
+                              });
                             } else {
-                              print("Update the existing task");
+                              await _dbHelper.updateTaskTitle(_taskID, value);
+                              print("updated");
                             }
 
                             _descriptionFocus.requestFocus();
