@@ -23,10 +23,12 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
 
   String _taskFile = "";
+  String _taskDescription = "";
   int _taskID = 0;
 
   FocusNode _titleFocus;
   FocusNode _descriptionFocus;
+  FocusNode _todoFocus;
 
   bool _contentVisible = false;
 
@@ -38,9 +40,11 @@ class _TaskPageState extends State<TaskPage> {
       _contentVisible = true;
       _taskFile = widget.task.title;
       _taskID = widget.task.id;
+      _taskDescription = widget.task.description;
 
       _titleFocus = FocusNode();
       _descriptionFocus = FocusNode();
+      _todoFocus = FocusNode();
 
     }
     super.initState();
@@ -50,6 +54,7 @@ class _TaskPageState extends State<TaskPage> {
   void dispose() {
     _titleFocus?.dispose();
     _descriptionFocus?.dispose();
+    _todoFocus?.dispose();
     super.dispose();
   }
 
@@ -122,6 +127,14 @@ class _TaskPageState extends State<TaskPage> {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: TextField(
                       focusNode: _descriptionFocus,
+                      onSubmitted: (value) {
+                        if (value != null) {
+                          if (_taskID != 0) {
+                            _dbHelper.updateTaskDescription(_taskID, value);
+                          }
+                        }
+                      },
+                      controller: TextEditingController()..text = _taskDescription,
                       decoration: InputDecoration(
                           hintText: "Enter description",
                           border: InputBorder.none,
@@ -140,8 +153,15 @@ class _TaskPageState extends State<TaskPage> {
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: () {
-                                    //Todo : swith todo completion state
+                                  onTap: () async {
+                                    if(snapshot.data[index].isDone == 0){
+                                      await _dbHelper.updateTodoDone(snapshot.data[index].id, 1);
+                                    } else {
+                                      await _dbHelper.updateTodoDone(snapshot.data[index].id, 0);
+                                    }
+                                    setState(() {
+                                    });
+                                    //Todo: can add todo during update task only
                                   },
                                   child: TodoWidget(
                                     text: snapshot.data[index].title,
@@ -175,6 +195,7 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                         Expanded(
                             child: TextField(
+                              controller: TextEditingController()..text = "",
                           onSubmitted: (value) async {
                             //check if field is null
                             if (value != null) {
@@ -189,6 +210,7 @@ class _TaskPageState extends State<TaskPage> {
                                 await _dbHelper.insertTodo(_newTodo);
                                 setState(() {
                                 });
+                                _todoFocus.requestFocus();
                               }
                             }
                           },

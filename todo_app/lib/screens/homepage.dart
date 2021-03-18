@@ -50,6 +50,7 @@ class _HomepageState extends State<Homepage> {
                               },
                               child: TaskCardWidget(
                                 title: snapshot.data[index].title,
+                                description: snapshot.data[index].description,
                               ),
                             );
                           });
