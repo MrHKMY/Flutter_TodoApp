@@ -127,12 +127,14 @@ class _TaskPageState extends State<TaskPage> {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: TextField(
                       focusNode: _descriptionFocus,
-                      onSubmitted: (value) {
+                      onSubmitted: (value) async {
                         if (value != null) {
                           if (_taskID != 0) {
-                            _dbHelper.updateTaskDescription(_taskID, value);
+                            await _dbHelper.updateTaskDescription(_taskID, value);
+                            _taskDescription = value;
                           }
                         }
+                        //_todoFocus.requestFocus();
                       },
                       controller: TextEditingController()..text = _taskDescription,
                       decoration: InputDecoration(
@@ -161,7 +163,6 @@ class _TaskPageState extends State<TaskPage> {
                                     }
                                     setState(() {
                                     });
-                                    //Todo: can add todo during update task only
                                   },
                                   child: TodoWidget(
                                     text: snapshot.data[index].title,
@@ -195,17 +196,18 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                         Expanded(
                             child: TextField(
+                              focusNode: _todoFocus,
                               controller: TextEditingController()..text = "",
                           onSubmitted: (value) async {
                             //check if field is null
                             if (value != null) {
                               //check if the todoo is null
-                              if (widget.task != null) {
+                              if (_taskID != null) {
                                 DatabaseHelper _dbHelper = DatabaseHelper();
                                 Todo _newTodo = Todo(
                                   title: value,
                                   isDone: 0,
-                                  taskID: widget.task.id,
+                                  taskID: _taskID,
                                 );
                                 await _dbHelper.insertTodo(_newTodo);
                                 setState(() {
@@ -230,7 +232,12 @@ class _TaskPageState extends State<TaskPage> {
                   bottom: 24.0,
                   right: 24.0,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      if(_taskID != 0) {
+                        await _dbHelper.deleteTask(_taskID);
+                        Navigator.pop(context);
+                      }
+                    },
                     child: Container(
                       width: 60,
                       height: 60,
