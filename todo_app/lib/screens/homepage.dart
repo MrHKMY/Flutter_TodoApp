@@ -12,6 +12,18 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   DatabaseHelper _dbHelper = DatabaseHelper();
+  bool _contentvisible = false;
+
+  @override
+  void initState() {
+    // String a = _dbHelper.retrieveTask().toString();
+    // if(a == null){
+    //   _contentvisible = false;
+    // } else {
+    //   _contentvisible = true;
+    // }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +39,18 @@ class _HomepageState extends State<Homepage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 32, bottom: 32),
-                    child: Image(image: AssetImage("assets/images/logo.png")),
+                    width: 80,
+                    height: 80,
+                    margin: EdgeInsets.only(top: 16, bottom: 32),
+                    child: Image(
+                        image: AssetImage(
+                            "assets/images/tick_icon.png",)),
+                  ),
+                  Visibility(
+                    visible: _contentvisible,
+                    child: Container(
+                          child: EmptyWidget(),
+                        ),
                   ),
                   Expanded(
                       child: FutureBuilder(
@@ -79,7 +101,7 @@ class _HomepageState extends State<Homepage> {
                       height: 60,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
-                              colors: [Colors.purple, Colors.purple[400]],
+                              colors: [Colors.green[800], Colors.green[600]],
                               begin: Alignment(0.0, -1),
                               end: Alignment(0, 1)),
                           borderRadius: BorderRadius.circular(20.0)),

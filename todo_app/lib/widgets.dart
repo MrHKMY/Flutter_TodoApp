@@ -45,6 +45,33 @@ class TaskCardWidget extends StatelessWidget {
   }
 }
 
+class EmptyWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 50, horizontal: 24),
+      margin: EdgeInsets.only(bottom: 24),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "No note/task added yet.",
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: 22,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class TodoWidget extends StatelessWidget {
 
   final String text;
