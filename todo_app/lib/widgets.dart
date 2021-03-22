@@ -45,6 +45,33 @@ class TaskCardWidget extends StatelessWidget {
   }
 }
 
+class EmptyWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 50, horizontal: 24),
+      margin: EdgeInsets.only(bottom: 24),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "No note/task added yet.",
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: 22,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class TodoWidget extends StatelessWidget {
 
   final String text;
@@ -75,13 +102,15 @@ class TodoWidget extends StatelessWidget {
                   image: AssetImage(
                       "assets/images/check_icon.png")),
             ),
-            Text(
-              text ?? "Unnamed Todo",
-            style: TextStyle(
-              color: isDone ? Color(0xFF86829D) : Color(0xFF211551),
-              fontSize: 16,
-              fontWeight: isDone ? FontWeight.w500 : FontWeight.bold,
-            ),)
+            Flexible(
+              child: Text(
+                text ?? "Unnamed Todo",
+              style: TextStyle(
+                color: isDone ? Color(0xFF86829D) : Color(0xFF211551),
+                fontSize: 16,
+                fontWeight: isDone ? FontWeight.w500 : FontWeight.bold,
+              ),),
+            )
           ],
         ),
       )
